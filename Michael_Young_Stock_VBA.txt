@@ -1,0 +1,112 @@
+Sub StockMarket()
+
+Dim ticker As String
+Dim change As Double
+Dim Total As Double
+Dim start As Long
+Dim rowCount As Long
+Dim days As Integer
+Dim row As Long
+Dim column As Integer
+Dim averageChange As Double
+Dim percentChange As Double
+Dim dailyChange As Double
+Dim ws As Worksheet
+
+
+For Each ws In Worksheets
+
+    column = 0
+    Total = 0
+    change = 0
+    start = 2
+    dailyChange = 0
+    
+                
+                ws.Range("I1").Value = "Ticker"
+                ws.Range("J1").Value = "Yearly Change"
+                ws.Range("K1").Value = "Percent Change"
+                ws.Range("L1").Value = "Total Stock Volume"
+                
+                column = 0
+                change = 0
+                Total = 0
+                start = 2
+                
+                
+                'last row
+                Rowend = ws.Cells(Rows.Count, 1).End(xlUp).row
+                
+                
+                For row = 2 To Rowend
+                
+                    If ws.Cells(row + 1, 1).Value <> ws.Cells(row, 1).Value Then
+                        Total = Total + ws.Cells(row, 7).Value
+                            If Total = 0 Then
+                                ws.Range("I" & 2 + column).Value = ws.Cells(row, 1).Value
+                                ws.Range("J" & 2 + column).Value = 0
+                                ws.Range("K" & 2 + column).Value = "%" & 0
+                                ws.Range("L" & 2 + column).Value = 0
+                                
+                            Else
+                                If ws.Cells(start, 3) = 0 Then
+                                    For find_value = start To row
+                                        If ws.Cells(find_value, 3).Value <> 0 Then
+                                        start = find_value
+                                        
+                                        End If
+                                    
+                                    Next find_value
+                                
+                                
+                                
+                            End If
+                
+                        change = (ws.Cells(row, 6) - ws.Cells(start, 3))
+                        percentChange = Round((change / ws.Cells(start, 3) * 100), 2)
+                        
+                        start = row + 1
+                        
+                            ws.Range("I" & 2 + column).Value = ws.Cells(row, 1).Value
+                            ws.Range("J" & 2 + column).Value = Round(change, 2)
+                            ws.Range("K" & 2 + column).Value = "%" & percentChange
+                            ws.Range("L" & 2 + column).Value = Total
+                            
+                    If change > 0 Then
+                        ws.Range("j" & 2 + column).Interior.ColorIndex = 4
+                        
+                        ElseIf change < 0 Then
+                        ws.Range("j" & 2 + column).Interior.ColorIndex = 3
+                        
+                        Else
+                            ws.Range("j" & 2 + column).Interior.ColorIndex = 0
+                            
+                        End If
+                
+                End If
+                
+                
+                Total = 0
+                change = 0
+                column = column + 1
+                days = 0
+                dailyChange = 0
+                
+                Else
+                    Total = Total + ws.Cells(row, 7).Value
+                End If
+                
+                
+                Next row
+
+    
+        
+    
+
+Next ws
+
+
+
+
+
+End Sub
